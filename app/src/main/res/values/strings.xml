@@ -1,0 +1,9 @@
+<resources>
+        <string name="app_name">tareas_menu</string>
+        <string name="hint_task">Ingrese una tarea</string>
+        <string name="button_add_task">Agregar tarea</string>
+        <string name="menu_edit">Editar</string>
+        <string name="menu_delete">Eliminar</string>
+        <string name="menu_mark">Marcar tarea</string>
+        <string name="menu_options">Más opciones</string>
+</resources>

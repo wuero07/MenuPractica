@@ -1,11 +1,7 @@
 package com.example.menu;
 
-
 import android.content.Context;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,18 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class TareAdapter extends RecyclerView.Adapter<TareAdapter.ViewHolder> {
+
     private List<String> tasks;
-    private Context context;
-    private OnItemClickListener onItemClickListener;
+    private OnItemClickListener listener;
 
+    public interface OnItemClickListener {
+        void onEditClick(int position);
+        void onDeleteClick(int position);
+        void onMarkClick(int position);
+    }
 
-    private static final int MENU_EDIT = 1;
-    private static final int MENU_DELETE = 2;
-
-    public TareAdapter(Context context, List<String> tasks, OnItemClickListener onItemClickListener) {
-        this.context = context;
+    public TareAdapter(List<String> tasks, OnItemClickListener listener) {
         this.tasks = tasks;
-        this.onItemClickListener = onItemClickListener;
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,7 +37,7 @@ public class TareAdapter extends RecyclerView.Adapter<TareAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String task = tasks.get(position);
-        holder.bind(task);
+        holder.bind(task, listener);
     }
 
     @Override
@@ -48,41 +45,27 @@ public class TareAdapter extends RecyclerView.Adapter<TareAdapter.ViewHolder> {
         return tasks.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewTask;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            textViewTask = itemView.findViewById(R.id.textViewTask);
-            itemView.setOnCreateContextMenuListener(this);
+            textViewTask = itemView.findViewById(R.id.text_nombre_tarea);
         }
 
-        public void bind(String task) {
+        public void bind(String task, OnItemClickListener listener) {
             textViewTask.setText(task);
+
+
+            itemView.setOnClickListener(v -> listener.onEditClick(getAdapterPosition()));
+
+
+            itemView.findViewById(R.id.button_delete).setOnClickListener(v -> listener.onDeleteClick(getAdapterPosition()));
+
+
+            itemView.findViewById(R.id.button_mark).setOnClickListener(v -> listener.onMarkClick(getAdapterPosition()));
         }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Opciones");
-            MenuItem editItem = menu.add(Menu.NONE, MENU_EDIT, Menu.NONE, "Editar");
-            MenuItem deleteItem = menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Eliminar");
-
-
-            editItem.setOnMenuItemClickListener(item -> {
-                onItemClickListener.onEditClick(getAdapterPosition());
-                return true;
-            });
-            deleteItem.setOnMenuItemClickListener(item -> {
-                onItemClickListener.onDeleteClick(getAdapterPosition());
-                return true;
-            });
-        }
-    }
-
-    public interface OnItemClickListener {
-        void onEditClick(int position);
-        void onDeleteClick(int position);
-
-        void onMarkClick(int position);
     }
 }
+
+

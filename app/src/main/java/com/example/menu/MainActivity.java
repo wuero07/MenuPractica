@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TareAdapter.OnItemClickListener {
+
     private List<String> tasks = new ArrayList<>();
     private RecyclerView recyclerViewTasks;
     private TareAdapter taskAdapter;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements TareAdapter.OnIte
         editTextTask = findViewById(R.id.editTextTask);
         buttonAddTask = findViewById(R.id.buttonAddTask);
 
-        taskAdapter = new TareAdapter(this, tasks, this);
+        taskAdapter = new TareAdapter(tasks, this);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTasks.setAdapter(taskAdapter);
 
@@ -55,10 +56,8 @@ public class MainActivity extends AppCompatActivity implements TareAdapter.OnIte
 
     @Override
     public void onMarkClick(int position) {
-
-        String task = tasks.get(position);
-        Toast.makeText(this, "Tarea marcada: " + task, Toast.LENGTH_SHORT).show();
-
+        
+        taskAdapter.notifyItemChanged(position);
     }
 
     private void editTask(final int position) {
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements TareAdapter.OnIte
             String editedTask = editText.getText().toString().trim();
             if (!editedTask.isEmpty()) {
                 tasks.set(position, editedTask);
-                taskAdapter.notifyDataSetChanged();
+                taskAdapter.notifyItemChanged(position);
                 Toast.makeText(MainActivity.this, "Tarea editada", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MainActivity.this, "Por favor, introduce un texto válido", Toast.LENGTH_SHORT).show();
